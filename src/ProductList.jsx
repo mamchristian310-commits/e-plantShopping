@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
 function ProductList({ onHomeClick }) {
@@ -274,8 +274,22 @@ function ProductList({ onHomeClick }) {
             </div>
             {!showCart ? (
                 <div className="product-grid">
-
-
+                    {plantsArray.map((category) => (
+                        <div className="category" key={category.category}>
+                            <h2 className="category-title">{category.category}</h2>
+                            <div className="product-list">
+                                {category.plants.map((plant) => (
+                                    <div className="product-card" key={`${category.category}-${plant.name}`}>
+                                        <img src={plant.image} alt={plant.name} className="product-image" />
+                                        <h3 className="product-name">{plant.name}</h3>
+                                        <p className="product-description">{plant.description}</p>
+                                        <p className="product-cost">{plant.cost}</p>
+                                        <button className="product-button add-to-cart" onClick={() => console.log(`Add ${plant.name} to cart`)}>Add to Cart</button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             ) : (
                 <CartItem onContinueShopping={handleContinueShopping} />
