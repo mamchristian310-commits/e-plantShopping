@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
+import { useDispatch } from 'react-redux';
+import { addItem } from './CartSlice';
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+    const [addedToCart, setAddedToCart] = useState({}); // Tracks products added to cart { [name]: true }
+    const dispatch = useDispatch();
 
     const plantsArray = [
         {
@@ -248,6 +252,13 @@ function ProductList({ onHomeClick }) {
         setShowCart(false); // Hide the cart when navigating to About Us
     };
 
+    const handleAddToCart = (plant) => {
+        // Dispatch selected plant to Redux cart slice
+        dispatch(addItem(plant));
+        // Update local state to reflect addition (use plant name as key)
+        setAddedToCart(prev => ({ ...prev, [plant.name]: true }));
+    };
+
     const handleContinueShopping = (e) => {
         e.preventDefault();
         setShowCart(false);
@@ -284,7 +295,13 @@ function ProductList({ onHomeClick }) {
                                         <h3 className="product-name">{plant.name}</h3>
                                         <p className="product-description">{plant.description}</p>
                                         <p className="product-cost">{plant.cost}</p>
-                                        <button className="product-button add-to-cart" onClick={() => console.log(`Add ${plant.name} to cart`)}>Add to Cart</button>
+                                        <button
+                                            className={`product-button add-to-cart ${addedToCart[plant.name] ? 'added-to-cart' : ''}`}
+                                            onClick={() => handleAddToCart(plant)}
+                                            disabled={!!addedToCart[plant.name]}
+                                        >
+                                            {addedToCart[plant.name] ? 'Added' : 'Add to Cart'}
+                                        </button>
                                     </div>
                                 ))}
                             </div>
